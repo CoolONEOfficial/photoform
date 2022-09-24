@@ -4,6 +4,8 @@ import 'package:json_theme/json_theme_schemas.dart';
 import 'package:flutter/services.dart';
 import 'package:photoform/linear_icons.dart';
 import 'package:photoform/slides/calendar_slide.dart';
+import 'package:photoform/slides/pinterest_slide.dart';
+import 'package:photoform/slides/question_slide.dart';
 import 'dart:convert';
 
 import 'package:responsive_framework/responsive_framework.dart';
@@ -63,66 +65,178 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  int _counter = 0;
+enum Stage {
+  Count,
+  Type,
+  City,
+  Location,
+  Pinterest,
+  Calendar,
+}
 
-  void _incrementCounter() {
+class _HomePageState extends State<HomePage> {
+  Stage _stage = Stage.Count;
+
+  void _goBack() {
     setState(() {
-      _counter++;
+      _stage = Stage.values[_stage.index];
     });
+  }
+
+  String title() {
+    switch (_stage) {
+      case Stage.Count:
+        return "How much?";
+      case Stage.Type:
+        return "How much?";
+      case Stage.City:
+        return "How much?";
+      case Stage.Location:
+        return "How much?";
+      case Stage.Pinterest:
+        return "How much?";
+      case Stage.Calendar:
+        return "How much?";
+    }
+  }
+
+  Widget slide() {
+    switch (_stage) {
+      case Stage.Count:
+        return const QuestionSlide(
+          [
+            Answer("0", "images/nobody.jpg"),
+            Answer("1", "images/individual.jpg"),
+            Answer("2", "images/pair.jpg"),
+            Answer("3+", "images/group.jpg"),
+          ],
+          QuestionType.Single,
+        );
+
+      case Stage.Type:
+        return const QuestionSlide(
+          [
+            Answer("0", "images/nobody.jpg"),
+            Answer("1", "images/individual.jpg"),
+            Answer("2", "images/pair.jpg"),
+            Answer("3+", "images/group.jpg"),
+          ],
+          QuestionType.Single,
+        );
+
+      case Stage.City:
+        return const QuestionSlide(
+          [
+            Answer("0", "images/nobody.jpg"),
+            Answer("1", "images/individual.jpg"),
+            Answer("2", "images/pair.jpg"),
+            Answer("3+", "images/group.jpg"),
+          ],
+          QuestionType.Single,
+        );
+
+      case Stage.Location:
+        return const QuestionSlide(
+          [
+            Answer("0", "images/nobody.jpg"),
+            Answer("1", "images/individual.jpg"),
+            Answer("2", "images/pair.jpg"),
+            Answer("3+", "images/group.jpg"),
+          ],
+          QuestionType.Single,
+        );
+
+      case Stage.Pinterest:
+        return const QuestionSlide(
+          [
+            Answer("0", "images/nobody.jpg"),
+            Answer("1", "images/individual.jpg"),
+            Answer("2", "images/pair.jpg"),
+            Answer("3+", "images/group.jpg"),
+          ],
+          QuestionType.Single,
+        );
+
+      case Stage.Calendar:
+        return const QuestionSlide(
+          [
+            Answer("0", "images/nobody.jpg"),
+            Answer("1", "images/individual.jpg"),
+            Answer("2", "images/pair.jpg"),
+            Answer("3+", "images/group.jpg"),
+          ],
+          QuestionType.Single,
+        );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Row(
-            children: [
-              Visibility(
-                visible: _counter < 1,
-                maintainSize: true,
-                maintainAnimation: true,
-                maintainState: true,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: IconButton(
-                    onPressed: (() => {_incrementCounter()}),
-                    icon: const Icon(LinearIcons.chevron_left),
-                  ),
+      body: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                Row(
+                  children: [
+                    Visibility(
+                      visible: _stage.index < 0,
+                      maintainSize: true,
+                      maintainAnimation: true,
+                      maintainState: true,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: IconButton(
+                          onPressed: (() => {_goBack()}),
+                          icon: const Icon(LinearIcons.chevron_left),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
-          ),
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                const Text(
-                  'You have pushed the button this many times:',
-                ),
-                const Icon(LinearIcons.alarm),
-                Text(
-                  '$_counter',
-                  style: Theme.of(context).textTheme.headline4,
-                ),
+                Text(title()),
               ],
             ),
-          ),
-          CalendarSlide(
-            onFinished: (value) {},
-          ),
-          const StepProgressIndicator(
-            totalSteps: 100,
-            currentStep: 32,
-            size: 8,
-            padding: 0,
-            selectedColor: Colors.black,
-            unselectedColor: Colors.transparent,
-          ),
-        ],
+
+            const SizedBox(height: 12),
+            // Center(
+            //   child: Column(
+            //     mainAxisAlignment: MainAxisAlignment.center,
+            //     children: <Widget>[
+            //       const Text(
+            //         'You have pushed the button this many times:',
+            //       ),
+            //       const Icon(LinearIcons.alarm),
+            //       Text(
+            //         '$_counter',
+            //         style: Theme.of(context).textTheme.headline4,
+            //       ),
+            //     ],
+            //   ),
+            // ),
+
+            Expanded(
+              child: slide(),
+            ),
+
+            // CalendarSlide(
+            //   onFinished: (value) {},
+            // ),
+            const StepProgressIndicator(
+              totalSteps: 100,
+              currentStep: 32,
+              size: 8,
+              padding: 0,
+              selectedColor: Colors.black,
+              unselectedColor: Colors.transparent,
+            ),
+          ],
+        ),
       ),
     );
   }

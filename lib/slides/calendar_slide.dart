@@ -1,7 +1,11 @@
 import 'package:flutter/widgets.dart';
 import 'package:webviewx/webviewx.dart';
 
-class CalendarSlide extends StatefulWidget {
+mixin Slide<T> {
+  ValueSetter<T> get onFinished;
+}
+
+class CalendarSlide extends StatefulWidget with Slide<String> {
   const CalendarSlide({super.key, required this.onFinished});
 
   final ValueSetter<String> onFinished;
