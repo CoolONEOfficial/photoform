@@ -3,13 +3,11 @@ import 'package:json_theme/json_theme.dart';
 import 'package:json_theme/json_theme_schemas.dart';
 import 'package:flutter/services.dart';
 import 'package:photoform/linear_icons.dart';
-import 'package:photoform/slides/calendar_slide.dart';
-import 'package:photoform/slides/pinterest_slide.dart';
 import 'package:photoform/slides/question_slide.dart';
+import 'package:photoform/widgets/Tappable.dart';
 import 'dart:convert';
 
 import 'package:responsive_framework/responsive_framework.dart';
-import 'package:step_progress_indicator/step_progress_indicator.dart';
 
 void main() async {
   SchemaValidator.enabled = false;
@@ -76,10 +74,11 @@ enum Stage {
 
 class _HomePageState extends State<HomePage> {
   Stage _stage = Stage.Count;
+  Map<Stage, dynamic> _answers = {};
 
   void _goBack() {
     setState(() {
-      _stage = Stage.values[_stage.index];
+      _stage = Stage.values[_stage.index - 1];
     });
   }
 
@@ -88,7 +87,7 @@ class _HomePageState extends State<HomePage> {
       case Stage.Count:
         return "How much?";
       case Stage.Type:
-        return "How much?";
+        return "How 22?";
       case Stage.City:
         return "How much?";
       case Stage.Location:
@@ -103,69 +102,77 @@ class _HomePageState extends State<HomePage> {
   Widget slide() {
     switch (_stage) {
       case Stage.Count:
-        return const QuestionSlide(
-          [
+        return QuestionSlide(
+          const [
             Answer("0", "images/nobody.jpg"),
             Answer("1", "images/individual.jpg"),
             Answer("2", "images/pair.jpg"),
             Answer("3+", "images/group.jpg"),
           ],
           QuestionType.Single,
+          ((value) {
+            setState(() {
+              _stage = Stage.Type;
+            });
+          }),
         );
 
       case Stage.Type:
-        return const QuestionSlide(
-          [
+        return QuestionSlide(
+          const [
+            Answer("111", "images/individual.jpg"),
             Answer("0", "images/nobody.jpg"),
-            Answer("1", "images/individual.jpg"),
-            Answer("2", "images/pair.jpg"),
-            Answer("3+", "images/group.jpg"),
           ],
           QuestionType.Single,
+          ((value) {}),
         );
 
       case Stage.City:
-        return const QuestionSlide(
-          [
+        return QuestionSlide(
+          const [
             Answer("0", "images/nobody.jpg"),
             Answer("1", "images/individual.jpg"),
             Answer("2", "images/pair.jpg"),
             Answer("3+", "images/group.jpg"),
           ],
           QuestionType.Single,
+          ((value) {}),
         );
 
       case Stage.Location:
-        return const QuestionSlide(
-          [
+        return QuestionSlide(
+          const [
             Answer("0", "images/nobody.jpg"),
             Answer("1", "images/individual.jpg"),
             Answer("2", "images/pair.jpg"),
             Answer("3+", "images/group.jpg"),
           ],
           QuestionType.Single,
+          ((value) {}),
         );
 
       case Stage.Pinterest:
-        return const QuestionSlide(
-          [
+        return QuestionSlide(
+          const [
             Answer("0", "images/nobody.jpg"),
             Answer("1", "images/individual.jpg"),
             Answer("2", "images/pair.jpg"),
             Answer("3+", "images/group.jpg"),
           ],
           QuestionType.Single,
+          ((value) {}),
         );
 
       case Stage.Calendar:
-        return const QuestionSlide(
-          [
+        return QuestionSlide(
+          const [
             Answer("0", "images/nobody.jpg"),
             Answer("1", "images/individual.jpg"),
             Answer("2", "images/pair.jpg"),
             Answer("3+", "images/group.jpg"),
           ],
           QuestionType.Single,
+          ((value) {}),
         );
     }
   }
@@ -173,70 +180,65 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Stack(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Stack(
               alignment: Alignment.center,
               children: [
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Visibility(
-                      visible: _stage.index < 0,
-                      maintainSize: true,
-                      maintainAnimation: true,
-                      maintainState: true,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: IconButton(
-                          onPressed: (() => {_goBack()}),
-                          icon: const Icon(LinearIcons.chevron_left),
-                        ),
-                      ),
-                    ),
+                    Tappable(
+                      child: Icon(LinearIcons.chevron_left),
+                      onTap: _goBack,
+                      isEnabled: _stage.index > 0,
+                    )
                   ],
                 ),
-                Text(title()),
+                Padding(
+                  padding: const EdgeInsets.only(top: 12.0),
+                  child: Text(title()),
+                ),
               ],
             ),
+          ),
 
-            const SizedBox(height: 12),
-            // Center(
-            //   child: Column(
-            //     mainAxisAlignment: MainAxisAlignment.center,
-            //     children: <Widget>[
-            //       const Text(
-            //         'You have pushed the button this many times:',
-            //       ),
-            //       const Icon(LinearIcons.alarm),
-            //       Text(
-            //         '$_counter',
-            //         style: Theme.of(context).textTheme.headline4,
-            //       ),
-            //     ],
-            //   ),
-            // ),
+          const SizedBox(height: 12),
+          // Center(
+          //   child: Column(
+          //     mainAxisAlignment: MainAxisAlignment.center,
+          //     children: <Widget>[
+          //       const Text(
+          //         'You have pushed the button this many times:',
+          //       ),
+          //       const Icon(LinearIcons.alarm),
+          //       Text(
+          //         '$_counter',
+          //         style: Theme.of(context).textTheme.headline4,
+          //       ),
+          //     ],
+          //   ),
+          // ),
 
-            Expanded(
-              child: slide(),
-            ),
+          Expanded(
+            child: slide(),
+          ),
 
-            // CalendarSlide(
-            //   onFinished: (value) {},
-            // ),
-            const StepProgressIndicator(
-              totalSteps: 100,
-              currentStep: 32,
-              size: 8,
-              padding: 0,
-              selectedColor: Colors.black,
-              unselectedColor: Colors.transparent,
-            ),
-          ],
-        ),
+          // CalendarSlide(
+          //   onFinished: (value) {},
+          // ),
+          LinearProgressIndicator(
+            backgroundColor: Colors.transparent,
+            color: Colors.black,
+            minHeight: 15,
+            value: (_stage.index + 1) / Stage.values.length,
+          ),
+        ],
       ),
     );
   }

@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:photoform/services/pinterest_service.dart';
+import 'package:photoform/slides/calendar_slide.dart';
 import 'package:photoform/widgets/Tile.dart';
 import 'package:shimmer/shimmer.dart';
 
-class PinterestSlide extends StatefulWidget {
-  PinterestSlide({super.key});
+class PinterestSlide extends StatefulWidget with Slide<List<PinImage>> {
+  PinterestSlide(this.onFinished, {super.key});
 
-  late PinterestService _apify = PinterestService();
+  final PinterestService _pinterest = PinterestService();
+
+  @override
+  final ValueSetter<List<PinImage>> onFinished;
 
   @override
   State<PinterestSlide> createState() => _PinterestSlideState();
@@ -21,7 +25,7 @@ class _PinterestSlideState extends State<PinterestSlide> {
   @override
   void initState() {
     super.initState();
-    futureResponses = widget._apify.scrab();
+    futureResponses = widget._pinterest.scrab();
   }
 
   Widget mockGrid(BuildContext context) {

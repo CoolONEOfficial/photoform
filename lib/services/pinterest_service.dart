@@ -27,7 +27,7 @@ class PinImage {
 class PinterestService {
   Future<List<PinImage>> scrab() async {
     final response = await http.Client().post(Uri.parse(
-      "http://207.254.31.20:8080/?query=test&key=dCfPkgk7iEGDSHe8", //"$apiLink&query=test",
+      "$apiLink&query=test", //"$apiLink&query=test",
     )); // %20
 
     if (response.statusCode == 200) {
