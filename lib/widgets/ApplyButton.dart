@@ -1,4 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:photoform/generated/locale_keys.g.dart';
 import 'package:photoform/widgets/Tappable.dart';
 
 class ApplyButton extends StatelessWidget {
@@ -19,8 +21,8 @@ class ApplyButton extends StatelessWidget {
           width: 2,
         ),
       ),
-      child: const Text(
-        "Apply",
+      child: Text(
+        LocaleKeys.apply.tr(),
         style: TextStyle(color: Colors.black),
       ),
     );
@@ -31,9 +33,9 @@ class ApplyButton extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(12.0),
       child: Tappable(
-        child: content(),
         isEnabled: isEnabled,
         onTap: onTap,
+        child: content(),
       ),
     );
   }

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/widgets.dart';
 import 'package:photoform/services/pinterest_service.dart';
 import 'package:photoform/widgets/Tappable.dart';
@@ -32,7 +33,7 @@ class Tile extends StatelessWidget {
         if (title != null) ...[
           Padding(
             padding: const EdgeInsets.all(12.0),
-            child: Text(title!),
+            child: Text(title!).tr(),
           ),
         ],
       ],

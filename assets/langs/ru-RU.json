@@ -1,0 +1,50 @@
+{
+    "apply": "Next",
+    "count": {
+        "title": "How much people?",
+        "answer": {
+            "nobody": "Nobody",
+            "individual": "One",
+            "pair": "Two",
+            "group": "Three or more"
+        }
+    },
+    "type": {
+        "title": "What type of photoshoot?",
+        "answer": {
+            "love_story": "Love story",
+            "individual": "Individual",
+            "group": "Group",
+            "two_girls": "Two girls",
+            "mom_son": "Mom and son",
+            "mom_dauther": "Mom and daughter",
+            "family": "Family with child",
+            "report": "Report",
+            "content": "Content"
+        }
+    },
+    "city": {
+        "title": "Where are you located?",
+        "answer": {
+            "belgrade": "Belgrade, Serbia",
+            "novi_sad": "Novi sad, Serbia",
+            "tolyatti": "Tolyatti, Russia",
+            "samara": "Samara, Russia",
+            "nizhny_novgorod": "Nizhny Novgorod, Russia"
+        }
+    },
+    "location": {
+        "title": "Where do you want to shoot?",
+        "answer": {
+            "street": "Street",
+            "nature": "Nature",
+            "studio": "Studio"
+        }
+    },
+    "references": {
+        "title": "What kind of photos do you want?"
+    },
+    "calendar": {
+        "title": "When you want to shoot?"
+    }
+}

@@ -1,11 +1,17 @@
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:json_theme/json_theme.dart';
 import 'package:json_theme/json_theme_schemas.dart';
 import 'package:flutter/services.dart';
+import 'package:photoform/generated/locale_keys.g.dart';
 import 'package:photoform/linear_icons.dart';
+import 'package:photoform/slides/calendar_slide.dart';
+import 'package:photoform/slides/pinterest_slide.dart';
 import 'package:photoform/slides/question_slide.dart';
 import 'package:photoform/widgets/Tappable.dart';
 import 'dart:convert';
+import 'generated/codegen_loader.g.dart';
 
 import 'package:responsive_framework/responsive_framework.dart';
 
@@ -13,11 +19,18 @@ void main() async {
   SchemaValidator.enabled = false;
   WidgetsFlutterBinding.ensureInitialized();
 
+  await EasyLocalization.ensureInitialized();
+
   final themeStr = await rootBundle.loadString('assets/appainter_theme.json');
   final themeJson = jsonDecode(themeStr);
   final theme = ThemeDecoder.decodeThemeData(themeJson)!;
-
-  runApp(MyApp(theme: theme));
+  runApp(EasyLocalization(
+    supportedLocales: const [Locale('en', 'US'), Locale('ru', 'RU')],
+    path: 'assets/langs',
+    fallbackLocale: Locale('en', 'US'),
+    child: MyApp(theme: theme),
+    assetLoader: CodegenLoader(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -29,6 +42,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      localizationsDelegates: context.localizationDelegates,
+      supportedLocales: context.supportedLocales,
+      locale: context.locale,
       builder: (context, child) => ResponsiveWrapper.builder(child,
           maxWidth: 1200,
           minWidth: 480,
@@ -39,25 +55,14 @@ class MyApp extends StatelessWidget {
             const ResponsiveBreakpoint.resize(1000, name: DESKTOP),
           ],
           background: Container(color: const Color(0xFFF5F5F5))),
-      home: const HomePage(title: "test"),
+      home: const HomePage(),
       theme: theme,
     );
   }
 }
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -65,10 +70,10 @@ class HomePage extends StatefulWidget {
 
 enum Stage {
   Count,
-  Type,
   City,
+  Type,
   Location,
-  Pinterest,
+  References,
   Calendar,
 }
 
@@ -85,17 +90,17 @@ class _HomePageState extends State<HomePage> {
   String title() {
     switch (_stage) {
       case Stage.Count:
-        return "How much?";
-      case Stage.Type:
-        return "How 22?";
+        return LocaleKeys.count_title;
       case Stage.City:
-        return "How much?";
+        return LocaleKeys.city_title;
+      case Stage.Type:
+        return LocaleKeys.type_title;
       case Stage.Location:
-        return "How much?";
-      case Stage.Pinterest:
-        return "How much?";
+        return LocaleKeys.location_title;
+      case Stage.References:
+        return LocaleKeys.references_title;
       case Stage.Calendar:
-        return "How much?";
+        return LocaleKeys.calendar_title;
     }
   }
 
@@ -104,10 +109,28 @@ class _HomePageState extends State<HomePage> {
       case Stage.Count:
         return QuestionSlide(
           const [
-            Answer("0", "images/nobody.jpg"),
-            Answer("1", "images/individual.jpg"),
-            Answer("2", "images/pair.jpg"),
-            Answer("3+", "images/group.jpg"),
+            Answer(LocaleKeys.count_answer_nobody, "images/nobody.jpg"),
+            Answer(LocaleKeys.count_answer_individual, "images/individual.jpg"),
+            Answer(LocaleKeys.count_answer_pair, "images/pair.jpg"),
+            Answer(LocaleKeys.count_answer_group, "images/group.jpg"),
+          ],
+          QuestionType.Single,
+          ((value) {
+            _answers[Stage.Count] = value.first;
+            setState(() {
+              _stage = Stage.City;
+            });
+          }),
+        );
+
+      case Stage.City:
+        return QuestionSlide(
+          const [
+            Answer(LocaleKeys.city_answer_belgrade, "images/nobody.jpg"),
+            Answer(LocaleKeys.city_answer_novi_sad, "images/nobody.jpg"),
+            Answer(LocaleKeys.city_answer_tolyatti, "images/individual.jpg"),
+            Answer(LocaleKeys.city_answer_samara, "images/individual.jpg"),
+            Answer(LocaleKeys.city_answer_nizhny_novgorod, "images/pair.jpg"),
           ],
           QuestionType.Single,
           ((value) {
@@ -118,61 +141,66 @@ class _HomePageState extends State<HomePage> {
         );
 
       case Stage.Type:
+        final type = _answers[Stage.Type] as Answer;
         return QuestionSlide(
-          const [
-            Answer("111", "images/individual.jpg"),
-            Answer("0", "images/nobody.jpg"),
+          [
+            if (type.text == LocaleKeys.count_answer_individual) ...[
+              const Answer(
+                  LocaleKeys.type_answer_individual, "images/individual.jpg"),
+            ],
+            if (type.text == LocaleKeys.count_answer_group) ...[
+              const Answer(LocaleKeys.type_answer_family, "images/nobody.jpg"),
+              const Answer(LocaleKeys.type_answer_group, "images/nobody.jpg"),
+              const Answer(LocaleKeys.type_answer_report, "images/nobody.jpg"),
+            ],
+            if (type.text == LocaleKeys.count_answer_pair) ...[
+              const Answer(
+                  LocaleKeys.type_answer_mom_dauther, "images/nobody.jpg"),
+              const Answer(LocaleKeys.type_answer_mom_son, "images/nobody.jpg"),
+              const Answer(
+                  LocaleKeys.type_answer_two_girls, "images/nobody.jpg"),
+              const Answer(
+                  LocaleKeys.type_answer_love_story, "images/nobody.jpg"),
+            ],
+            const Answer(LocaleKeys.type_answer_content, "images/nobody.jpg"),
           ],
           QuestionType.Single,
-          ((value) {}),
-        );
-
-      case Stage.City:
-        return QuestionSlide(
-          const [
-            Answer("0", "images/nobody.jpg"),
-            Answer("1", "images/individual.jpg"),
-            Answer("2", "images/pair.jpg"),
-            Answer("3+", "images/group.jpg"),
-          ],
-          QuestionType.Single,
-          ((value) {}),
+          ((value) {
+            setState(() {
+              _stage = Stage.Location;
+            });
+          }),
         );
 
       case Stage.Location:
         return QuestionSlide(
           const [
-            Answer("0", "images/nobody.jpg"),
-            Answer("1", "images/individual.jpg"),
-            Answer("2", "images/pair.jpg"),
-            Answer("3+", "images/group.jpg"),
+            Answer(LocaleKeys.location_answer_nature, "images/nobody.jpg"),
+            Answer(LocaleKeys.location_answer_street, "images/individual.jpg"),
+            Answer(LocaleKeys.location_answer_studio, "images/pair.jpg"),
           ],
           QuestionType.Single,
-          ((value) {}),
+          ((value) {
+            setState(() {
+              _stage = Stage.References;
+            });
+          }),
         );
 
-      case Stage.Pinterest:
-        return QuestionSlide(
-          const [
-            Answer("0", "images/nobody.jpg"),
-            Answer("1", "images/individual.jpg"),
-            Answer("2", "images/pair.jpg"),
-            Answer("3+", "images/group.jpg"),
-          ],
-          QuestionType.Single,
-          ((value) {}),
+      case Stage.References:
+        return PinterestSlide(
+          ((value) {
+            setState(() {
+              _stage = Stage.Calendar;
+            });
+          }),
         );
 
       case Stage.Calendar:
-        return QuestionSlide(
-          const [
-            Answer("0", "images/nobody.jpg"),
-            Answer("1", "images/individual.jpg"),
-            Answer("2", "images/pair.jpg"),
-            Answer("3+", "images/group.jpg"),
-          ],
-          QuestionType.Single,
-          ((value) {}),
+        return CalendarSlide(
+          ((value) {
+            // final
+          }),
         );
     }
   }
@@ -194,49 +222,28 @@ class _HomePageState extends State<HomePage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Tappable(
-                      child: Icon(LinearIcons.chevron_left),
                       onTap: _goBack,
                       isEnabled: _stage.index > 0,
+                      child: const Icon(LinearIcons.chevron_left),
                     )
                   ],
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 12.0),
-                  child: Text(title()),
+                  child: Text(title()).tr(),
                 ),
               ],
             ),
           ),
-
           const SizedBox(height: 12),
-          // Center(
-          //   child: Column(
-          //     mainAxisAlignment: MainAxisAlignment.center,
-          //     children: <Widget>[
-          //       const Text(
-          //         'You have pushed the button this many times:',
-          //       ),
-          //       const Icon(LinearIcons.alarm),
-          //       Text(
-          //         '$_counter',
-          //         style: Theme.of(context).textTheme.headline4,
-          //       ),
-          //     ],
-          //   ),
-          // ),
-
           Expanded(
             child: slide(),
           ),
-
-          // CalendarSlide(
-          //   onFinished: (value) {},
-          // ),
           LinearProgressIndicator(
             backgroundColor: Colors.transparent,
             color: Colors.black,
             minHeight: 15,
-            value: (_stage.index + 1) / Stage.values.length,
+            value: (_stage.index + 1) / (Stage.values.length + 1),
           ),
         ],
       ),

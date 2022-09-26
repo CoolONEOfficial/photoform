@@ -44,6 +44,10 @@ dependencies:
   html: ^0.15.0
   shimmer: ^2.0.0
   transparent_image: ^2.0.0
+  easy_localization:
+    git:
+      url: https://github.com/donmovil/easy_localization.git
+      branch: develop
 
 dev_dependencies:
   flutter_test:
@@ -70,7 +74,8 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/appainter_theme.json
-    - images/
+    - assets/images/
+    - assets/langs/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

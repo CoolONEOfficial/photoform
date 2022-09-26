@@ -6,7 +6,7 @@ mixin Slide<T> {
 }
 
 class CalendarSlide extends StatefulWidget with Slide<String> {
-  const CalendarSlide({super.key, required this.onFinished});
+  const CalendarSlide(this.onFinished, {super.key});
 
   @override
   final ValueSetter<String> onFinished;
